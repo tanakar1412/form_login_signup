@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Nhân viên</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      padding: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-bar input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 250px;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .filters select {
+      padding: 5px;
+    }
+
+    .btn-create, .btn-export {
+      border: 1px solid orange;
+      background: white;
+      color: orange;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #eee;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f5f5f5;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+    }
+
+    .status {
+      background: #e3f9e5;
+      color: green;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .action-icon {
+      color: orange;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="top-bar">
+    <input type="text" id="searchInput" placeholder="🔍 tên hoặc sđt hoặc email">
+    <button class="btn-create">+ TẠO NHÂN VIÊN</button>
+  </div>
+
+  <div class="filters">
+    <select id="genderFilter">
+      <option value="">Giới tính: Tất cả</option>
+      <option value="Nam">Nam</option>
+      <option value="Nữ">Nữ</option>
+    </select>
+    <select id="roleFilter">
+      <option value="">Chức vụ: Tất cả</option>
+      <option value="Nhân viên">Nhân viên</option>
+      <option value="Quản lý">Quản lý</option>
+    </select>
+    <select id="statusFilter">
+      <option value="">Trạng thái: Tất cả</option>
+      <option value="Hoạt động">Hoạt động</option>
+      <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+    </select>
+    <button class="btn-export">XUẤT EXCEL</button>
+  </div>
+
+  <table id="staffTable">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Ảnh</th>
+        <th>Code</th>
+        <th>Họ và tên</th>
+        <th>Email</th>
+        <th>SDT</th>
+        <th>Ngày sinh</th>
+        <th>Giới tính</th>
+        <th>Chức vụ</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JavaScript will inject rows here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const data = [
+    {
+      id: 1,
+      avatar: 'https://i.pravatar.cc/36?img=1',
+      code: 'NV3',
+      name: 'Nguyễn Văn Nhật',
+      email: 'nhatdz@gmail.com',
+      phone: '0971088478',
+      dob: '20-12-2003',
+      gender: 'Nam',
+      role: 'Nhân viên',
+      status: 'Hoạt động'
+    },
+    {
+      id: 2,
+      avatar: 'https://i.pravatar.cc/36?img=2',
+      code: 'NV2',
+      name: 'Nguyễn Văn Tuấn',
+      email: 'tuannv283@gmail.com',
+      phone: '0472819462',
+      dob: '20-12-2002',
+      gender: 'Nam',
+      role: 'Nhân viên',
+      status: 'Hoạt động'
+    },
+    {
+      id: 3,
+      avatar: 'https://i.pravatar.cc/36?img=3',
+      code: 'NV1',
+      name: 'Trần Thị Hoa',
+      email: 'hoa.tran@example.com',
+      phone: '0909123456',
+      dob: '15-07-2000',
+      gender: 'Nữ',
+      role: 'Quản lý',
+      status: 'Ngưng hoạt động'
+    }
+  ];
+
+  const tbody = document.querySelector('#staffTable tbody');
+  const searchInput = document.getElementById('searchInput');
+  const genderFilter = document.getElementById('genderFilter');
+  const roleFilter = document.getElementById('roleFilter');
+  const statusFilter = document.getElementById('statusFilter');
+
+  function renderTable(filteredData) {
+    tbody.innerHTML = '';
+    filteredData.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td><img src="${item.avatar}" class="avatar" /></td>
+        <td>${item.code}</td>
+        <td>${item.name}</td>
+        <td>${item.email}</td>
+        <td>${item.phone}</td>
+        <td>${item.dob}</td>
+        <td>${item.gender}</td>
+        <td>${item.role}</td>
+        <td><span class="status">${item.status}</span></td>
+        <td><span class="action-icon">👁️</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function applyFilters() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const gender = genderFilter.value;
+    const role = roleFilter.value;
+    const status = statusFilter.value;
+
+    const filtered = data.filter(item => {
+      const matchSearch =
+        item.name.toLowerCase().includes(searchTerm) ||
+        item.email.toLowerCase().includes(searchTerm) ||
+        item.phone.includes(searchTerm);
+      const matchGender = !gender || item.gender === gender;
+      const matchRole = !role || item.role === role;
+      const matchStatus = !status || item.status === status;
+      return matchSearch && matchGender && matchRole && matchStatus;
+    });
+
+    renderTable(filtered);
+  }
+
+  // Event listeners
+  searchInput.addEventListener('input', applyFilters);
+  genderFilter.addEventListener('change', applyFilters);
+  roleFilter.addEventListener('change', applyFilters);
+  statusFilter.addEventListener('change', applyFilters);
+
+  // Initial render
+  renderTable(data);
+</script>
+
+</body>
+</html>

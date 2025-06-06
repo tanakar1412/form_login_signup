@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Phiếu Giảm Giá</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #f4f4f4; padding: 30px; margin: 0; }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px 30px;
+      max-width: 1200px;
+      margin: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 { margin-bottom: 20px; }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .top-bar input[type="text"] {
+      padding: 8px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filters input[type="date"],
+    .filters select {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .btn {
+      padding: 6px 12px;
+      border: 1px solid orange;
+      background: white;
+      color: orange;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #f9f9f9;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .badge-blue {
+      background: #e3f2fd;
+      color: #1e88e5;
+    }
+
+    .badge-pink {
+      background: #fde7f3;
+      color: #d81b60;
+    }
+
+    .status {
+      background: #e9fbe9;
+      color: green;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .action-icon {
+      color: orange;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Phiếu giảm giá</h2>
+
+  <div class="top-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Tìm phiếu giảm giá theo mã hoặc tên">
+    <div style="display: flex; gap: 10px;">
+      <button class="btn" onclick="createVoucher()">+ Tạo mới</button>
+      <button class="btn" onclick="exportExcel()">Xuất Excel</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <input type="date" id="fromDate">
+    <input type="date" id="toDate">
+    <select id="typeFilter">
+      <option value="">Kiểu</option>
+      <option value="Cá nhân">Cá nhân</option>
+      <option value="Công khai">Công khai</option>
+    </select>
+    <select id="discountTypeFilter">
+      <option value="">Loại</option>
+      <option value="Phần trăm">Phần trăm</option>
+      <option value="Số tiền">Số tiền</option>
+    </select>
+    <select id="statusFilter">
+      <option value="">Trạng thái</option>
+      <option value="Đang diễn ra">Đang diễn ra</option>
+      <option value="Đã kết thúc">Đã kết thúc</option>
+    </select>
+  </div>
+
+  <table id="voucherTable">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Mã</th>
+        <th>Tên</th>
+        <th>Kiểu</th>
+        <th>Loại</th>
+        <th>Số lượng</th>
+        <th>Ngày bắt đầu</th>
+        <th>Ngày kết thúc</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JS Render -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const data = [
+    {
+      code: 'kkkjkk', name: 'kkkkkkk', type: 'Cá nhân', kind: '10%', amount: 20,
+      start: '2023-12-21T13:36', end: '2023-12-30T00:00', status: 'Đang diễn ra'
+    },
+    {
+      code: 'PGGTT', name: 'tri an kh', type: 'Cá nhân', kind: '100%', amount: 0,
+      start: '2023-12-20T10:29', end: '2023-12-23T00:00', status: 'Đang diễn ra'
+    },
+    {
+      code: 'PGG2023', name: 'Thi bảo vệ', type: 'Công khai', kind: '10%', amount: 97,
+      start: '2023-12-20T10:05', end: '2023-12-30T00:00', status: 'Đang diễn ra'
+    },
+    {
+      code: 'PGG7653', name: 'Tri ân khách hàng', type: 'Cá nhân', kind: '10%', amount: 20,
+      start: '2023-12-18T00:00', end: '2023-12-29T00:00', status: 'Đang diễn ra'
+    },
+    {
+      code: 'PGG12', name: 'Lập đông', type: 'Công khai', kind: '250,000 ₫', amount: 30,
+      start: '2023-12-01T00:00', end: '2023-12-12T00:00', status: 'Đang diễn ra'
+    }
+  ];
+
+  function renderTable(filteredData) {
+    const tbody = document.querySelector('#voucherTable tbody');
+    tbody.innerHTML = '';
+    filteredData.forEach((v, index) => {
+      const badgeClass = v.type === 'Công khai' ? 'badge-pink' : 'badge-blue';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${v.code}</td>
+        <td>${v.name}</td>
+        <td><span class="badge ${badgeClass}">${v.type}</span></td>
+        <td>${v.kind}</td>
+        <td>${v.amount}</td>
+        <td>${formatDate(v.start)}</td>
+        <td>${formatDate(v.end)}</td>
+        <td><span class="status">${v.status}</span></td>
+        <td><span class="action-icon">👁️</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function formatDate(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString('vi-VN');
+  }
+
+  function applyFilters() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const type = document.getElementById('typeFilter').value;
+    const kind = document.getElementById('discountTypeFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    const from = document.getElementById('fromDate').value;
+    const to = document.getElementById('toDate').value;
+
+    const filtered = data.filter(v => {
+      const matchesSearch = v.code.toLowerCase().includes(search) || v.name.toLowerCase().includes(search);
+      const matchesType = !type || v.type === type;
+      const matchesKind = !kind || (kind === 'Phần trăm' ? v.kind.includes('%') : v.kind.includes('₫'));
+      const matchesStatus = !status || v.status === status;
+
+      const startTime = new Date(v.start);
+      const fromTime = from ? new Date(from) : null;
+      const toTime = to ? new Date(to) : null;
+
+      const matchesDate = (!fromTime || startTime >= fromTime) && (!toTime || startTime <= toTime);
+
+      return matchesSearch && matchesType && matchesKind && matchesStatus && matchesDate;
+    });
+
+    renderTable(filtered);
+  }
+
+  // Hook filters
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+  document.getElementById('typeFilter').addEventListener('change', applyFilters);
+  document.getElementById('discountTypeFilter').addEventListener('change', applyFilters);
+  document.getElementById('statusFilter').addEventListener('change', applyFilters);
+  document.getElementById('fromDate').addEventListener('change', applyFilters);
+  document.getElementById('toDate').addEventListener('change', applyFilters);
+
+  // Export & Create (stub)
+  function exportExcel() {
+    alert("📤 Chức năng Xuất Excel đang được phát triển!");
+  }
+
+  function createVoucher() {
+    alert("📝 Chức năng Tạo phiếu giảm giá sẽ được mở form!");
+  }
+
+  // Initial render
+  renderTable(data);
+</script>
+
+</body>
+</html>

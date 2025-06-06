@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm nhân viên</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f8f8f8;
+      padding: 30px;
+    }
+
+    .form-container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: flex;
+      gap: 40px;
+    }
+
+    .form-left, .form-right {
+      flex: 1;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .required {
+      color: red;
+    }
+
+    .gender-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .photo-box {
+      border: 1px dashed #ccc;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .submit-btn {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid orange;
+      color: orange;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Thêm Nhân Viên</h2>
+  <form id="employeeForm">
+    <div class="form-grid">
+      <!-- Left side -->
+      <div class="form-left">
+        <div class="form-group">
+          <label>Ảnh đại diện</label>
+          <div class="photo-box" onclick="document.getElementById('avatarInput').click()">
+            <span id="photoPreviewText">Chọn ảnh</span>
+            <img id="photoPreview" src="" alt="" style="display:none;" />
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+        </div>
+        <div class="form-group">
+          <label for="name"><span class="required">*</span> Họ Và Tên</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="phone"><span class="required">*</span> Số Điện Thoại</label>
+          <input type="text" id="phone" required>
+        </div>
+        <div class="form-group">
+          <label for="address">Địa chỉ cụ thể</label>
+          <input type="text" id="address">
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="form-right">
+        <div class="form-group">
+          <label for="cccd"><span class="required">*</span> Số CCCD</label>
+          <input type="text" id="cccd" required>
+        </div>
+        <div class="form-group">
+          <label><span class="required">*</span> Giới tính</label>
+          <div class="gender-group">
+            <label><input type="radio" name="gender" value="Nam" required> Nam</label>
+            <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dob"><span class="required">*</span> Ngày sinh</label>
+          <input type="date" id="dob" required>
+        </div>
+        <div class="form-group">
+          <label for="email"><span class="required">*</span> Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="province"><span class="required">*</span> Tỉnh/thành phố</label>
+          <select id="province" required>
+            <option value="">Chọn tỉnh</option>
+            <option value="Hà Nội">Hà Nội</option>
+            <option value="TP HCM">TP HCM</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="district"><span class="required">*</span> Quận/huyện</label>
+          <input type="text" id="district" required>
+        </div>
+        <div class="form-group">
+          <label for="ward"><span class="required">*</span> Xã/phường/thị trấn</label>
+          <input type="text" id="ward" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-btn">
+      <button type="submit">Thêm Nhân Viên</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const avatarInput = document.getElementById('avatarInput');
+  const photoPreview = document.getElementById('photoPreview');
+  const photoPreviewText = document.getElementById('photoPreviewText');
+
+  avatarInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        photoPreview.src = e.target.result;
+        photoPreview.style.display = 'block';
+        photoPreviewText.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('employeeForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const data = {
+      name: document.getElementById('name').value,
+      phone: document.getElementById('phone').value,
+      cccd: document.getElementById('cccd').value,
+      gender: document.querySelector('input[name="gender"]:checked')?.value,
+      dob: document.getElementById('dob').value,
+      email: document.getElementById('email').value,
+      province: document.getElementById('province').value,
+      district: document.getElementById('district').value,
+      ward: document.getElementById('ward').value,
+      address: document.getElementById('address').value
+    };
+
+    console.log('✅ Nhân viên mới:', data);
+    alert("Đã tạo nhân viên thành công!");
+
+    // TODO: Gửi dữ liệu này qua API nếu cần
+    // fetch('/api/employees', { method: 'POST', body: JSON.stringify(data), ... })
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý khách hàng</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #f4f4f4;
+      margin: 0;
+      padding: 30px;
+    }
+    .card {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      max-width: 1200px;
+      margin: auto;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    .card h2 {
+      margin-bottom: 20px;
+    }
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .top-controls input {
+      padding: 8px 12px;
+      width: 300px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .top-controls .btn {
+      padding: 8px 14px;
+      margin-left: 10px;
+      border: 1px solid orange;
+      background: white;
+      color: orange;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .filters {
+      margin: 15px 0;
+      font-size: 14px;
+      display: flex;
+      gap: 20px;
+    }
+    .filters select {
+      padding: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #eee;
+    }
+    th {
+      background: #f9f9f9;
+    }
+    .status {
+      background: #e4fce4;
+      color: green;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .action-icon {
+      color: orange;
+      cursor: pointer;
+    }
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    .pagination select {
+      padding: 5px;
+    }
+    .pagination button {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      background: white;
+      color: orange;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="top-controls">
+    <div>
+      <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm tên hoặc sđt hoặc email">
+      <button class="btn" onclick="exportExcel()">Xuất Excel</button>
+    </div>
+    <button class="btn">+ Tạo khách hàng</button>
+  </div>
+
+  <div class="filters">
+    <label>
+      Giới tính:
+      <select id="genderFilter">
+        <option value="">Tất cả</option>
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+      </select>
+    </label>
+    <label>
+      Trạng thái:
+      <select id="statusFilter">
+        <option value="">Tất cả</option>
+        <option value="Hoạt động">Hoạt động</option>
+        <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+      </select>
+    </label>
+  </div>
+
+  <table id="customerTable">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Code</th>
+        <th>Email</th>
+        <th>Họ tên</th>
+        <th>Ngày sinh</th>
+        <th>Số điện thoại</th>
+        <th>Giới tính</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- JS Render Here -->
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <div>
+      Xem
+      <select id="limitSelect">
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+      </select>
+      khách hàng
+    </div>
+    <div>
+      <button disabled>◀</button>
+      <button class="active">1</button>
+      <button disabled>▶</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const customers = [
+    { code: 'KH7', email: 'nhatnguyendzpro@gmail.com', name: 'Nguyễn Văn Nhật', dob: '1990-01-01', phone: '0261748212', gender: 'Nam', status: 'Hoạt động' },
+    { code: 'KH6', email: 'anhle@gmail.com', name: 'Anh Lê', dob: '2001-12-20', phone: '0562718362', gender: 'Nam', status: 'Hoạt động' },
+    { code: 'KH5', email: 'tuongtrieu@gmail.com', name: 'Tường Triệu', dob: '2000-12-20', phone: '0253718362', gender: 'Nam', status: 'Hoạt động' },
+    { code: 'KH4', email: 'quynhtrang123@gmail.com', name: 'Quỳnh Trang', dob: '2001-12-20', phone: '0452716382', gender: 'Nữ', status: 'Hoạt động' },
+    { code: 'KH3', email: 'nguyenthithuyduong948@gmail.com', name: 'Nguyễn Thị Thùy Dương', dob: '2023-12-20', phone: '0647536475', gender: 'Nam', status: 'Hoạt động' }
+  ];
+
+  const tbody = document.querySelector('#customerTable tbody');
+  const searchInput = document.getElementById('searchInput');
+  const genderFilter = document.getElementById('genderFilter');
+  const statusFilter = document.getElementById('statusFilter');
+  const limitSelect = document.getElementById('limitSelect');
+
+  function renderTable(data) {
+    tbody.innerHTML = '';
+    data.forEach((c, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${c.code}</td>
+        <td>${c.email}</td>
+        <td>${c.name}</td>
+        <td>${formatDate(c.dob)}</td>
+        <td>${c.phone}</td>
+        <td>${c.gender}</td>
+        <td><span class="status">${c.status}</span></td>
+        <td><span class="action-icon">👁️</span></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function formatDate(d) {
+    const date = new Date(d);
+    return date.toLocaleDateString('vi-VN');
+  }
+
+  function filterData() {
+    const search = searchInput.value.toLowerCase();
+    const gender = genderFilter.value;
+    const status = statusFilter.value;
+
+    const filtered = customers.filter(c => {
+      const matchSearch = c.name.toLowerCase().includes(search) || c.email.toLowerCase().includes(search) || c.phone.includes(search);
+      const matchGender = !gender || c.gender === gender;
+      const matchStatus = !status || c.status === status;
+      return matchSearch && matchGender && matchStatus;
+    });
+
+    renderTable(filtered.slice(0, parseInt(limitSelect.value)));
+  }
+
+  searchInput.addEventListener('input', filterData);
+  genderFilter.addEventListener('change', filterData);
+  statusFilter.addEventListener('change', filterData);
+  limitSelect.addEventListener('change', filterData);
+
+  function exportExcel() {
+    alert('💡 Chức năng xuất Excel đang phát triển...');
+  }
+
+  // Initial render
+  filterData();
+</script>
+
+</body>
+</html>
