@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shoe Shop</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f7f7f7;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 30px;
+    }
+
+    .filters {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .filters h2 {
+      font-size: 18px;
+      color: #008080;
+      margin-bottom: 20px;
+    }
+
+    .filters h4 {
+      margin: 15px 0 5px;
+    }
+
+    .filters label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .products-header h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .sort {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #eee;
+    }
+
+    .card-body {
+      padding: 10px;
+    }
+
+    .card-body h4 {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .price {
+      color: teal;
+      font-weight: bold;
+    }
+
+    .sold {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .rating {
+      color: #f1c40f;
+      font-size: 14px;
+    }
+
+    .discount {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ffc107;
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .like-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 16px;
+      color: red;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+    }
+
+    .pagination {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .pagination button {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .pagination .active {
+      background: #008080;
+      color: white;
+    }
+
+    .cart-counter {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      background: #007a7a;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+    .no-products {
+      text-align: center;
+      padding: 40px;
+      color: #aaa;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cart-counter">Cart: <span id="cartCount">0</span></div>
+
+<div class="container">
+  <aside class="filters">
+    <h2>Shoe List</h2>
+    <h4>BRAND</h4>
+    <label><input type="checkbox" class="brand-filter" value="Nike"> Nike</label>
+    <label><input type="checkbox" class="brand-filter" value="Adidas"> Adidas</label>
+    <label><input type="checkbox" class="brand-filter" value="Puma"> Puma</label>
+    <label><input type="checkbox" class="brand-filter" value="Skechers"> Skechers</label>
+    <label><input type="checkbox" class="brand-filter" value="Vans"> Vans</label>
+
+    <h4>PRICE</h4>
+    <label><input type="checkbox" class="price-filter" value="0-500000"> Under $500</label>
+    <label><input type="checkbox" class="price-filter" value="500000-1000000"> $500 - $1000</label>
+
+    <h4>COLOR</h4>
+    <label><input type="checkbox" class="color-filter" value="Black"> Black</label>
+    <label><input type="checkbox" class="color-filter" value="White"> White</label>
+    <label><input type="checkbox" class="color-filter" value="Red"> Red</label>
+  </aside>
+
+  <section>
+    <div class="products-header">
+      <h2>Shoe List</h2>
+      <select class="sort" id="sortSelect">
+        <option value="best">Best selling</option>
+        <option value="priceLow">Price low to high</option>
+        <option value="priceHigh">Price high to low</option>
+      </select>
+    </div>
+
+    <div class="products-grid" id="productGrid"></div>
+    <div id="pagination" class="pagination"></div>
+  </section>
+</div>
+
+<script>
+  const products = [
+    {
+      id: 1,
+      brand: "Nike",
+      name: "Air Max Pro",
+      price: 999000,
+      sold: 1200,
+      rating: 5,
+      color: "Black",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOiwXOFbWM35KZ8fypHCmoB1wGM3piaw8oVQ&s"
+    },
+    {
+      id: 2,
+      brand: "Adidas",
+      name: "Ultraboost 21",
+      price: 899000,
+      sold: 980,
+      rating: 4,
+      color: "White",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRR3PRUvccUpz9LRzMx6QlFNbz7wdfPlvqt4Q&s"
+    },
+    {
+      id: 3,
+      brand: "Puma",
+      name: "RS-X³ Puzzle",
+      price: 850000,
+      sold: 740,
+      rating: 4,
+      color: "Red",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTksm6_iwXaoUXg2xey_M-sIR9T_z6M9Qw7TA&sc"
+    },
+    {
+      id: 4,
+      brand: "Skechers",
+      name: "GOwalk Flex",
+      price: 790000,
+      sold: 620,
+      rating: 3,
+      color: "Black",
+      image: "https://m.media-amazon.com/images/I/61B48-+8+hL._AC_UY900_.jpg"
+    },
+    {
+      id: 5,
+      brand: "Vans",
+      name: "Old Skool Classic",
+      price: 720000,
+      sold: 890,
+      rating: 5,
+      color: "White",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuyMXdjDjjhFn9EFFPeFH-BwqbUmzEhAde7A&s"
+    },
+  ];
+
+  let currentPage = 1;
+  const itemsPerPage = 6;
+
+  function renderProducts(data) {
+    const productGrid = document.getElementById('productGrid');
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paged = data.slice(start, end);
+
+    productGrid.innerHTML = '';
+    if (paged.length === 0) {
+      productGrid.innerHTML = `<div class="no-products">No products found.</div>`;
+      return;
+    }
+
+    paged.forEach(p => {
+      productGrid.innerHTML += `
+        <div class="card">
+          <div class="card-image-wrapper">
+            <img src="${p.image}" alt="${p.name}">
+            <span class="discount">-${Math.floor(Math.random() * 30 + 10)}%</span>
+            <button class="like-btn">♡</button>
+          </div>
+          <div class="card-body">
+            <h4>${p.brand} - ${p.name}</h4>
+            <div class="rating">${'★'.repeat(p.rating)}${'☆'.repeat(5 - p.rating)} (${p.sold})</div>
+            <div class="price">₫${p.price.toLocaleString()}</div>
+            <div class="sold">${p.sold} sold</div>
+            <div class="sold">Color: ${p.color}</div>
+          </div>
+        </div>`;
+    });
+
+    document.querySelectorAll('.like-btn').forEach(btn => {
+      btn.onclick = () => {
+        btn.textContent = btn.textContent === '♡' ? '❤️' : '♡';
+      };
+    });
+  }
+
+  function renderPagination(data) {
+    const pagination = document.getElementById('pagination');
+    const pageCount = Math.ceil(data.length / itemsPerPage);
+    pagination.innerHTML = '';
+    for (let i = 1; i <= pageCount; i++) {
+      pagination.innerHTML += `<button class="${i === currentPage ? 'active' : ''}">${i}</button>`;
+    }
+
+    document.querySelectorAll('#pagination button').forEach(btn => {
+      btn.onclick = () => {
+        currentPage = +btn.textContent;
+        filterAndRender();
+      };
+    });
+  }
+
+  function filterAndRender() {
+    let filtered = [...products];
+
+    const brandChecked = [...document.querySelectorAll('.brand-filter:checked')].map(el => el.value);
+    if (brandChecked.length) {
+      filtered = filtered.filter(p => brandChecked.includes(p.brand));
+    }
+
+    const priceChecked = [...document.querySelectorAll('.price-filter:checked')].map(el => el.value);
+    if (priceChecked.length) {
+      filtered = filtered.filter(p => {
+        return priceChecked.some(range => {
+          const [min, max] = range.split('-').map(Number);
+          return p.price >= min && p.price <= max;
+        });
+      });
+    }
+
+    const colorChecked = [...document.querySelectorAll('.color-filter:checked')].map(el => el.value);
+    if (colorChecked.length) {
+      filtered = filtered.filter(p => colorChecked.includes(p.color));
+    }
+
+    const sort = document.getElementById('sortSelect').value;
+    if (sort === 'priceLow') filtered.sort((a, b) => a.price - b.price);
+    else if (sort === 'priceHigh') filtered.sort((a, b) => b.price - a.price);
+    else filtered.sort((a, b) => b.sold - a.sold);
+
+    renderProducts(filtered);
+    renderPagination(filtered);
+  }
+
+  document.querySelectorAll('.brand-filter, .price-filter, .color-filter').forEach(input => {
+    input.addEventListener('change', () => {
+      currentPage = 1;
+      filterAndRender();
+    });
+  });
+
+  document.getElementById('sortSelect').addEventListener('change', () => {
+    currentPage = 1;
+    filterAndRender();
+  });
+
+  filterAndRender();
+</script>
+
+</body>
+</html>

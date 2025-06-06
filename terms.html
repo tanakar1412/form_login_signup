@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terms and Conditions</title>
+    <style>
+        body {
+            font-family: Comic Sans MS, cursive;
+            background-color: #fefefe;
+            padding: 40px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #ff69b4;
+        }
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .meme {
+            text-align: center;
+            margin: 30px 0;
+        }
+        img {
+            max-width: 100%;
+        }
+        .back-button {
+        display: block;
+        margin: 40px auto 0;
+        padding: 12px 24px;
+        font-family: 'Comic Sans MS', cursive;
+        font-size: 18px;
+        color: white;
+        background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+        background-size: 1400% 1400%;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        animation: rainbow 8s ease infinite, pop 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease;
+    }
+
+    .back-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    @keyframes rainbow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pop {
+        from { transform: scale(0.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    </style>
+</head>
+<body>
+    <h1>Totally Legit™ Terms and Conditions</h1>
+
+    <p>By signing up, you agree to the following completely reasonable and definitely not suspicious rules:</p>
+
+    <p>1. You shall not pass... unless you provide your real name, three chicken nuggets, and the sacred scroll of memes.</p>
+
+    <p>2. We reserve the right to change these terms whenever we feel like it. Even at 3AM. Even on a Sunday. Even in the shower.</p>
+
+    <p>3. Your data may be stored in a mystical cave guarded by sentient AI hamsters. We think they're trustworthy. Probably.</p>
+
+    <p>4. By clicking “I agree,” you consent to receiving occasional telepathic thoughts from Nicolas Cage. You can opt out by whispering “Not the bees!” into a banana phone.</p>
+
+    <p>5. If you don't read these terms fully, we will send Shrek to your house. Just to hang out. Maybe play Monopoly.</p>
+
+    <p>6. We are not responsible if your keyboard turns into a potato after using this site. That’s on you, buddy.</p>
+
+    <div class="meme">
+        <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSbrjc3cEuMuZX7IlfIEb7Yom9hKw8k5Nk0l0D797ncBy_2QUBDi0qqWSTx15ODU6gCG5pYt_CvIO3r-blsBrDV3Sou0YZSHgVgT98bi54" alt="Meme: Distracted Boyfriend">
+        <p><em>Left: Real legal terms | Right: This nonsense</em></p>
+    </div>
+
+    <p>7. By agreeing, you grant us permission to send you cat videos at 2AM. And you can't complain. Because you agreed.</p>
+
+    <p>8. If you finish reading this entire thing, congratulations. You now have +5 Internet Respect™. Redeemable nowhere.</p>
+
+    <p>Thank you for pretending to read all this. Click the "Back" button now and go live your best life. Or sign up. Either way.</p>
+    <button class="back-button" onclick="history.back()">← Back to Sign Up</button>
+</body>
+</html>

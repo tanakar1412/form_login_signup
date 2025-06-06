@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="signup-container">
+        <form class="signup-form">
+            <h2>SIGN UP</h2>
+            <div class="name-fields">
+                <input type="text" placeholder="First Name" required>
+                <input type="text" placeholder="Last Name" required>
+            </div>
+            <input type="email" placeholder="Email" required>
+            <input type="email" placeholder="Confirm Email" required>
+            <input type="password" placeholder="Password" required>
+            <input type="password" placeholder="Confirm Password" required>
+            <label class="checkbox-container">
+                <input type="checkbox" required>
+                <span>Accept <a href="terms.html">Terms and Conditions</a></span>
+            </label>
+            <button type="submit">SIGN UP</button>
+        </form>
+        <p class="login-redirect">
+    Already have an account? <a href="login.html">Login here</a>
+</p>
+    </div>
+<script>
+    const form = document.querySelector('.signup-form');
+    const container = document.querySelector('.signup-container');
+    const email = form.querySelector('input[placeholder="Email"]');
+    const confirmEmail = form.querySelector('input[placeholder="Confirm Email"]');
+    const password = form.querySelector('input[placeholder="Password"]');
+    const confirmPassword = form.querySelector('input[placeholder="Confirm Password"]');
+
+    function showError(input, message) {
+        input.style.borderColor = 'red';
+        if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('error-msg')) {
+            const error = document.createElement('div');
+            error.classList.add('error-msg');
+            error.style.color = 'red';
+            error.style.fontSize = '12px';
+            error.textContent = message;
+            input.parentNode.insertBefore(error, input.nextSibling);
+        }
+    }
+
+    function clearError(input) {
+        input.style.borderColor = '#aaa';
+        if (input.nextElementSibling && input.nextElementSibling.classList.contains('error-msg')) {
+            input.nextElementSibling.remove();
+        }
+    }
+
+    function validateMatch(input1, input2, type) {
+        if (input1.value !== input2.value) {
+            showError(input2, `${type} does not match`);
+            return false;
+        } else {
+            clearError(input2);
+            return true;
+        }
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let valid = true;
+        if (!validateMatch(email, confirmEmail, 'Email')) valid = false;
+        if (!validateMatch(password, confirmPassword, 'Password')) valid = false;
+
+        if (valid) {
+            form.style.display = 'none';
+            const success = document.createElement('div');
+            success.className = 'success-message';
+            success.innerHTML = '🎉 Successfully Signed Up!';
+            container.appendChild(success);
+        } else {
+            form.classList.add('shake');
+            setTimeout(() => form.classList.remove('shake'), 300);
+        }
+    });
+
+    [email, confirmEmail].forEach(input => {
+        input.addEventListener('input', () => validateMatch(email, confirmEmail, 'Email'));
+    });
+
+    [password, confirmPassword].forEach(input => {
+        input.addEventListener('input', () => validateMatch(password, confirmPassword, 'Password'));
+    });
+</script>
+
+
+</body>
+</html>
