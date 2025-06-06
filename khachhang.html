@@ -107,7 +107,8 @@
       <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm tên hoặc sđt hoặc email">
       <button class="btn" onclick="exportExcel()">Xuất Excel</button>
     </div>
-    <button class="btn">+ Tạo khách hàng</button>
+    <button class="btn" id="addCustomerBtn">+ Tạo khách hàng</button>
+
   </div>
 
   <div class="filters">
@@ -227,6 +228,10 @@
   function exportExcel() {
     alert('💡 Chức năng xuất Excel đang phát triển...');
   }
+  document.getElementById('addCustomerBtn').addEventListener('click', () => {
+  window.location.href = 'themkhachhang.html';
+});
+
 
   // Initial render
   filterData();
